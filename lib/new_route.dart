@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/src/rendering/sliver_persistent_header.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'colors.dart';
 import 'models/home_model.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-
+import 'package:flutter/rendering.dart';
+import 'package:flutter/foundation.dart';
 import 'models/Main.dart';
 import 'json/Banner.dart';
 import 'json/RecommendInfo.dart';
@@ -14,6 +16,7 @@ class HttpTestRoute extends StatefulWidget {
   @override
   _HttpTestRouteState createState() => new _HttpTestRouteState();
 }
+
 
 class _HttpTestRouteState extends State<HttpTestRoute> {
   List<dynamic> jsonresponse;
@@ -68,65 +71,59 @@ class _HttpTestRouteState extends State<HttpTestRoute> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text('Contacts'),
-      ),
-//    body: new BannerMainWidget(),
-      body: new Stack(children: <Widget>[
-        Container(
-          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-          width: MediaQuery.of(context).size.width,
-          height: 200,
-          child: Swiper(
-            itemCount: jsonresponse != null ? jsonresponse.length : 0,
-            itemBuilder: (BuildContext context, int index) {
-              return new Image.network(
-                BannerInfo.fromJson(jsonresponse[index]).img_url,
-                fit: BoxFit.fill,
-              );
-            },
-            pagination: SwiperPagination(
-                alignment: Alignment.bottomRight,
-                margin: const EdgeInsets.fromLTRB(0, 0, 20, 10),
-                builder: DotSwiperPaginationBuilder(
-                    color: Colors.black54, activeColor: Colors.white)),
-            controller: SwiperController(),
-            scrollDirection: Axis.horizontal,
-            autoplay: true,
-            onTap: (index) => print('点击了第$index'),
-          ),
+        appBar: new AppBar(
+          title: new Text('Contacts'),
         ),
-        Container(
-          padding: const EdgeInsets.fromLTRB(0, 200, 0, 0),
-          width: MediaQuery.of(context).size.width,
-          child: ListView.builder(
-            // Let the ListView know how many items it needs to build
-            itemCount: recommendInfo != null ? recommendInfo.length : 0,
-            // Provide a builder function. This is where the magic happens! We'll
-            // convert each item into a Widget based on the type of item it is.
-            itemBuilder: (context, index) {
-              RecommendInfo item = RecommendInfo.fromJson(recommendInfo[index]);
+//    body: new BannerMainWidget(),
+        body:
+    Container(
+     child: CustomScrollView(
+        slivers: <Widget>[
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: HeroHeader(
+              jsonresponse: jsonresponse,
+              minExtent: 150.0,
+              maxExtent: 250.0,
 
-//                    if (item is HeadingItem) {
-              return ListTile(
-                title: Text(
-                  item.title,
-                  style: Theme.of(context).textTheme.headline,
-                ),
-              );
-//                    } else if (item is MessageItem) {
-//                      return ListTile(
-//                        title: Text(item.sender),
-//                        subtitle: Text(item.body),
-//                      );
-//                    }
-            },
+            ),
           ),
-        )
-      ]),
-    );
-  }
 
+          SliverGrid(
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 200.0,
+              mainAxisSpacing: 0.0,
+              crossAxisSpacing: 0.0,
+              childAspectRatio: 0.75,
+            ),
+            delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                return Container(
+                  alignment: Alignment.center,
+                  padding: _edgeInsetsForIndex(index),
+                  child: new Text(
+                    RecommendInfo.fromJson(recommendInfo[index]).title,
+                  ),
+                );
+              },
+              childCount: recommendInfo != null ? recommendInfo.length : 0,
+            ),
+          ),
+        ],
+
+      ),
+    ),
+
+    );
+
+  }
+  EdgeInsets _edgeInsetsForIndex(int index) {
+    if (index % 2 == 0) {
+      return EdgeInsets.only(top: 4.0, left: 8.0, right: 4.0, bottom: 4.0);
+    } else {
+      return EdgeInsets.only(top: 4.0, left: 4.0, right: 8.0, bottom: 4.0);
+    }
+  }
 //  @override
 //  Widget build(BuildContext context) {
 //    return new Scaffold(
@@ -235,4 +232,60 @@ class _HttpTestRouteState extends State<HttpTestRoute> {
 //                      //关闭client后，通过该client发起的所有请求都会中止。
 //                      httpClient.close();
   }
+}
+class HeroHeader implements SliverPersistentHeaderDelegate {
+
+  HeroHeader({
+    this.jsonresponse,
+    this.minExtent,
+    this.maxExtent,
+  });
+  List<dynamic> jsonresponse;
+  double maxExtent;
+  double minExtent;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Container(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+          width: MediaQuery.of(context).size.width,
+          height: 200,
+          child: Swiper(
+            itemCount: jsonresponse != null ? jsonresponse.length : 0,
+            itemBuilder: (BuildContext context, int index) {
+              return new Image.network(
+                BannerInfo.fromJson(jsonresponse[index]).img_url,
+                fit: BoxFit.fill,
+              );
+            },
+            pagination: SwiperPagination(
+                alignment: Alignment.bottomRight,
+                margin: const EdgeInsets.fromLTRB(0, 0, 20, 10),
+                builder: DotSwiperPaginationBuilder(
+                    color: Colors.black54, activeColor: Colors.white)),
+            controller: SwiperController(),
+            scrollDirection: Axis.horizontal,
+            autoplay: true,
+            onTap: (index) => print('点击了第$index'),
+          ),
+        ),
+
+      ],
+    );
+  }
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
+    // TODO: implement shouldRebuild
+    return null;
+  }
+
+  @override
+  // TODO: implement snapConfiguration
+  FloatingHeaderSnapConfiguration get snapConfiguration => null;
+
 }

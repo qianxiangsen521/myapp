@@ -3,6 +3,7 @@ import 'pages/airplay_scrren.dart';
 import 'pages/email_sceen.dart';
 import 'pages/home_scrren.dart';
 import 'pages/pages_scrren.dart';
+import 'pages/test_sceen.dart';
 
 //StatefulWidget  每次击都会刷新一次 负责跟用户交互
 class BottomNavigationWidget extends StatefulWidget {
@@ -25,6 +26,7 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
       ..add(HomeSceen())
       ..add(EmailSceen())
       ..add(PagesScrreen())
+      ..add(TestSceen())
       ..add(AirPlayScreen());
   //list连续调用
     super.initState();
@@ -61,6 +63,15 @@ class BottomNavigationWidgetState extends State<BottomNavigationWidget> {
               ),
               title: Text(
                 "pages",
+                style: TextStyle(color: _BottomNavigationWidgetColor),
+              )),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.offline_bolt,
+                color: _BottomNavigationWidgetColor,
+              ),
+              title: Text(
+                "test",
                 style: TextStyle(color: _BottomNavigationWidgetColor),
               )),
           BottomNavigationBarItem(

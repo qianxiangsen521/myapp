@@ -14,13 +14,15 @@ class RecommendInfo{
 });
 
   factory RecommendInfo.fromJson(Map<String,dynamic> json){
-    var contentsFromJson  = json['contents'];
-    List<ContentsInfo> contents = contentsFromJson.cast<ContentsInfo>();
+
+    var list = json['contents'] as List;
+
+    List<ContentsInfo> imagesList = list.map((i) => ContentsInfo.fromJson(i)).toList();
     return RecommendInfo(
       title: json['title'],
       index_type: json['index_type'],
       more_contents_url: json['more_contents_url'],
-      contents: contents
+      contents:imagesList,
 
     );
   }
@@ -38,7 +40,7 @@ class ContentsInfo{
   final String album_img;
   final String broadcaster;
   final String length;
-  final int type;
+  final String type;
   final String playbill_url;
   final String praise;
   final String enjoy_url;
@@ -49,7 +51,7 @@ class ContentsInfo{
   final String albums_url;
   final String album_list_url;
   final String album_Introduction_url;
-  final String is_collect;
+  final bool is_collect;
 
   ContentsInfo({this.id,this.name
     ,this.current_play,
