@@ -4,6 +4,8 @@ A new Flutter project.
 
 ## Image
 
+![image](https://github.com/qianxiangsen521/myapp/blob/master/img/image.jpg) 
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
