@@ -7,7 +7,7 @@ class HorizontalList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 80.0,
+      height: 100.0,
       child: new ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: recommendInfo != null ? RecommendInfo.fromJson(recommendInfo[0]).contents.length : 0,
@@ -15,7 +15,7 @@ class HorizontalList extends StatelessWidget {
           return Category(
 //            image: "assets/tshirt.png",
             image: RecommendInfo.fromJson(recommendInfo[0]).contents[index].img_url,
-            title: RecommendInfo.fromJson(recommendInfo[0]).title,
+            title: RecommendInfo.fromJson(recommendInfo[0]).contents[index].name,
           );
         },
       ),

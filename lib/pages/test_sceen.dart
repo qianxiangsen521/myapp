@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:myapp/componets/horizontal_listview.dart';
+import 'package:myapp/componets/products.dart';
 
 class TestSceen extends StatefulWidget {
   @override
@@ -28,12 +29,6 @@ class _TestTestRouteState extends State<TestSceen> {
     }).then((response) {
       setState(() {
         jsonresponse = json.decode(response.body);
-        for (int i = 0; i < jsonresponse.length; i++) {
-          print('Response name:${BannerInfo.fromJson(jsonresponse[i]).name}');
-        }
-        BannerInfo bannerInfo = BannerInfo.fromJson(jsonresponse[0]);
-        print("Response name: ${bannerInfo.name}");
-
         print("Response status: ${response.statusCode}");
         print("Response body: ${response.body}");
       });
@@ -50,11 +45,7 @@ class _TestTestRouteState extends State<TestSceen> {
     }).then((response) {
       setState(() {
         recommendInfo = json.decode(response.body);
-        for (int i = 0; i < recommendInfo.length; i++) {
-          print(
-              '"Response name1111: ${RecommendInfo.fromJson(recommendInfo[i]).title}');
-        }
-        print("Response status11111: ${RecommendInfo.fromJson(recommendInfo[0]).contents[0].img_url}");
+        print("Response status11111: ${response.statusCode}");
         print("Response body11111: ${response.body}");
       });
     });
@@ -74,15 +65,27 @@ class _TestTestRouteState extends State<TestSceen> {
           image_carousel(jsonresponse),
 
           //padding widget
-//          new Padding(
-//            padding: const EdgeInsets.all(2.0),
-//            child: new Text('中央台'),
-//          ),
+          new Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: new Text('中央台'),
+          ),
 
           //Horizontal list view begins here
           HorizontalList(recommendInfo: recommendInfo),
 
+          new Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: new Text('地方台'),
+          ),
 
+
+          // Grid View
+          Container(
+            height: 320.0,
+
+
+            child: Products(recommendInfo:recommendInfo),
+          ),
         ],
       ),
     );
